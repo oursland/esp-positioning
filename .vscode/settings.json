@@ -1,0 +1,15 @@
+{
+  "C_Cpp.intelliSenseEngine": "Tag Parser",
+  "idf.adapterTargetName": "esp32s3",
+  "idf.openOcdConfigs": [
+    "interface/ftdi/esp32_devkitj_v1.cfg",
+    "target/esp32s3.cfg"
+  ],
+  "idf.port": "/dev/cu.usbserial-2110",
+  "files.associations": {
+    "sdkconfig.h": "c",
+    "freertos.h": "c",
+    "esp_chip_info.h": "c"
+  },
+  "idf.flashType": "UART"
+}
