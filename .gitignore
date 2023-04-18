@@ -1,2 +1,6 @@
 **/.DS_Store
-build
+kicad/esp-localization-backups/
+kicad/output/
+kicad/fp-info-cache
+kicad/*.log
+build/
