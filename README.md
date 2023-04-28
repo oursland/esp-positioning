@@ -1,53 +1,38 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-H4 | ESP32-S2 | ESP32-S3 |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+# Positioning via IMU-aided WiFi FTM and UWB on an ESP32-S3
 
-# Hello World Example
+![blinkenlights](docs/source/_static/blinkenlights.gif)
 
-Starts a FreeRTOS task to print "Hello World".
+## Overview
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+There is ample research into the accuracy of Ulra Wideband (UWB)-based ranging and positioning, WiFi Fine Timing Measurements (WiFi FTM)-based ranging and positioning, and an Inertial Measurement Unit (IMU) augmentation of such systems.  Most of the work was performed with purpose-designed systems or smartphones, but very little was performed using Espressif SoCs including the ESP32-S3.
 
-## How to use example
+Based on the findings of previous works, it's expected that WiFi FTM may be only valuable for positioning information to about 1 meter accuracy while UWB sensors can provide measurements accurate down to around 10 centimeters.  UWB has limited range, particularly in indoor and cluttered environments where the signals fail to penetrate through walls or other obstacles.  This suggests that if accuracy is a requirement, it may be required to install a UWB transciever but also utilize WiFi FTM to provide rough positioning should the UWB signal be lost.
 
-Follow detailed instructions provided specifically for this example.
+Sensor fusion and state estimation through Kalman filtering can provide better positioning estimates over naive approaches using WiFi FTM, UWB, or IMU measurements alone.  Previous research have been performed using Extended Kalman Filtering (EKF) and Unscented Kalman Filter (UKF) approaches, but publications for Invariant Extended Kalman Filter (InEKF) have not been identified.
 
-Select the instructions depending on Espressif chip installed on your development board:
+### Questions
 
-- [ESP32 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html)
-- [ESP32-S2 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html)
+1. Given the utility for low-cost, low-power, and reduced bill-of-materials positioning for small, low-cost robots, can we use the ESP32-S3's WiFi Fine Timing Measurements (WiFi FTM) in 802.11mc standard and an IMU for positioning without additional sensors?
 
+2. Will the inclusion of a UWB sensor bring sufficient value to offset their additional cost, complexity, and power consumption?
 
-## Example folder contents
+3. Can the redundancy in Time Difference of Arrival (TDOA) measurements from WiFi FTM and UWB be used to improve accuracy beyond either WiFi FTM or UWB alone?
 
-The project **hello_world** contains one source file in C language [hello_world_main.c](main/hello_world_main.c). The file is located in folder [main](main).
+## Objective
 
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt` files that provide set of directives and instructions describing the project's source files and targets (executable, library, or both).
+This experiment is to compare and contrast position estimation of systems:
 
-Below is short explanation of remaining files in the project folder.
+    1. IMU and WiFi FTM
+    2. IMU and UWB
+    3. IMU with WiFi FTM and UWB
 
-```
-├── CMakeLists.txt
-├── pytest_hello_world.py      Python script used for automated testing
-├── main
-│   ├── CMakeLists.txt
-│   └── hello_world_main.c
-└── README.md                  This is the file you are currently reading
-```
+## Experiment Design
 
-For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
+To perform this experiment, a custom design was created using:
 
-## Troubleshooting
+* Espressif ESP32-S3-WROOM-2 module
+* STMicroelectronics ISM330DHCX IMU
+* Qorvo DWM1000 UWB module
+* 2 AAA battery holder
 
-* Program upload failure
-
-    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
-    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
-
-## Technical support and feedback
-
-Please use the following feedback channels:
-
-* For technical queries, go to the [esp32.com](https://esp32.com/) forum
-* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
-
-We will get back to you as soon as possible.
+Circuit Diagram and PCB Layout can be found in the [`kicad/`](kicad/) directory.
